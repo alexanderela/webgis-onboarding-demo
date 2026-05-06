@@ -4,28 +4,25 @@ import { customElement, property, query } from 'lit/decorators.js';
 import MapView from '@arcgis/core/views/MapView';
 import WebMap from '@arcgis/core/WebMap';
 
-@customElement('arcgis-map-view')
+@customElement('arcgis-web-map')
 export class ArcgisMapView extends LitElement {
   @property({ attribute: 'item-id' })
   itemId: string = '';
 
   render() {
-    return html`
-      <style>
-        #viewDiv {
-          height: 100%;
-          width: 100%;
-        }
-      </style>
-      <div id="viewDiv">Hello</div>
-    `;
+    return html` <div id="viewDiv">Hello</div> `;
   }
 
   @query('#viewDiv')
   private viewDiv!: HTMLDivElement;
+
   private mapView: MapView | null = null;
 
   firstUpdated() {
+    this.initializeMapView();
+  }
+
+  initializeMapView() {
     if (this.itemId) {
       const webMap = new WebMap({
         portalItem: {
@@ -49,11 +46,16 @@ export class ArcgisMapView extends LitElement {
       width: 100%;
       height: 100%;
     }
+
+    #viewDiv {
+      height: 100%;
+      width: 100%;
+    }
   `;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'arcgis-map-view': ArcgisMapView;
+    'arcgis-web-map': ArcgisMapView;
   }
 }
