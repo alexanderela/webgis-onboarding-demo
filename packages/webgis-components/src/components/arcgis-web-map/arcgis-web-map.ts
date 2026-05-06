@@ -2,7 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 
 import MapView from '@arcgis/core/views/MapView';
-import WebMap from '@arcgis/core/WebMap';
+
+import { createMapView, createWebMapFromItem } from '../../arcgis';
 
 @customElement('arcgis-web-map')
 export class ArcgisMapView extends LitElement {
@@ -24,18 +25,11 @@ export class ArcgisMapView extends LitElement {
 
   initializeMapView() {
     if (this.itemId) {
-      const webMap = new WebMap({
-        portalItem: {
-          id: this.itemId,
-        },
-      });
+      const webMap = createWebMapFromItem(this.itemId);
       if (this.mapView) {
         this.mapView.map = webMap;
       } else {
-        this.mapView = new MapView({
-          container: this.viewDiv,
-          map: webMap,
-        });
+        this.mapView = createMapView(this.viewDiv, webMap);
       }
     }
   }
