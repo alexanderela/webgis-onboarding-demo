@@ -4,6 +4,7 @@ import { customElement, property, query } from 'lit/decorators.js';
 import MapView from '@arcgis/core/views/MapView';
 
 import { createMapView, createWebMapFromItem } from '../../arcgis';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
 @customElement('arcgis-web-map')
 export class ArcgisMapView extends LitElement {
@@ -11,17 +12,13 @@ export class ArcgisMapView extends LitElement {
   itemId: string = '';
 
   render() {
-    return html` <div id="viewDiv" />
-      <div id="mapUi"></div>`;
+    return html` <div id="viewDiv" />`;
   }
 
   @query('#viewDiv')
   private viewDiv!: HTMLDivElement;
 
   private mapView: MapView | null = null;
-
-  @query('#mapUi')
-  private mapUi!: HTMLDivElement;
 
   firstUpdated() {
     this.initializeMapView();
@@ -30,12 +27,54 @@ export class ArcgisMapView extends LitElement {
   initializeMapView() {
     if (this.itemId) {
       const webMap = createWebMapFromItem(this.itemId);
-      if (this.mapView) {
-        this.mapView.map = webMap;
-      } else {
-        this.mapView = createMapView(this.viewDiv, webMap);
-        this.mapView.ui.container = this.mapUi;
-      }
+
+      this.mapView = createMapView(this.viewDiv, webMap);
+
+      this.mapView.when(
+        () => {
+          const layers = this.mapView?.map?.layers;
+          layers?.forEach(layer => {
+            if (layer.type === 'feature') {
+              const featureLayer = layer as FeatureLayer;
+              featureLayer.outFields = ['*'];
+            }
+          });
+
+          this.mapView?.on('click', async (event: any) => {
+            const hitTest = await this.mapView?.hitTest(event);
+            console.log('hitTest: ', hitTest);
+
+            const graphicHit = hitTest?.results?.find(
+              result => result.type === 'graphic',
+            );
+
+            if (graphicHit) {
+              const { attributes, geometry, layer } = graphicHit.graphic;
+              this.dispatchEvent(
+                new CustomEvent('feature-selected', {
+                  detail: {
+                    selection: {
+                      id: attributes.FID ?? attributes.OBJECTID,
+                      title: attributes.Volcano_Name ?? 'Selected volcano',
+                      attributes,
+                      geometry,
+                      layer: {
+                        id: layer?.id,
+                        title: layer?.title,
+                      },
+                    },
+                  },
+                  bubbles: true,
+                  composed: true,
+                }),
+              );
+            }
+          });
+        },
+        error => {
+          console.log('error: ', error);
+        },
+      );
     }
   }
 
@@ -51,15 +90,6 @@ export class ArcgisMapView extends LitElement {
     #viewDiv {
       height: 100%;
       width: 100%;
-    }
-
-    #mapUi {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 4px 8px;
-      pointer-events: auto;
     }
   `;
 }
