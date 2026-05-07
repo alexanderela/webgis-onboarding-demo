@@ -68,6 +68,13 @@ export class ArcgisMapView extends LitElement {
                   composed: true,
                 }),
               );
+            } else {
+              this.dispatchEvent(
+                new CustomEvent('selection-cleared', {
+                  bubbles: true,
+                  composed: true,
+                }),
+              );
             }
           });
         },
@@ -80,7 +87,6 @@ export class ArcgisMapView extends LitElement {
 
   static styles = css`
     :host {
-      position: relative;
       display: block;
       width: 100%;
       height: 100%;
