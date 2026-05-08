@@ -3,7 +3,30 @@ import { html, render } from 'lit';
 import './arcgis-popup-panel';
 
 describe('<arcgis-popup-panel>', () => {
-  it('renders panel when selection is provided', () => {});
+  it('renders panel when selection is provided', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    render(
+      html`<arcgis-popup-panel selection="{{}}"></arcgis-popup-panel>`,
+      container,
+    );
+
+    const el = container.querySelector('arcgis-popup-panel');
+    el!.selection = {
+      id: '1',
+      title: 'Test Feature',
+      attributes: {
+        Country: 'United States',
+        Elevation: 3000,
+      },
+    };
+
+    await el?.updateComplete;
+
+    const panel = el?.shadowRoot!.querySelector('calcite-panel');
+    expect(panel).not.toBeNull();
+    expect(panel?.getAttribute('heading')).toBe('Test Feature');
+  });
 
   it('renders nothing when no selection is provided', async () => {
     const container = document.createElement('div');
