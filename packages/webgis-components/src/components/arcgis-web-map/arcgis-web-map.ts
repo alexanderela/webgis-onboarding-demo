@@ -32,6 +32,12 @@ export class ArcgisMapView extends LitElement {
     this.initializeMapView();
   }
 
+  /**
+   * Create a new WebMap and MapView and set the map view to display the WebMap.
+   * Specify that only attributes configured in WebMap to be visible should be returned in
+   * feature layer outfields
+   * @returns undefined
+   */
   private initializeMapView = () => {
     if (this.itemId) {
       const webMap = createWebMapFromItem(this.itemId);
@@ -66,6 +72,12 @@ export class ArcgisMapView extends LitElement {
     }
   };
 
+  /**
+   * Perform hit test upon map click. If no graphics are hit, emit custom 'selection-cleared' event
+   * If a graphic is hit, invoke this.emitFeatureSelection with hit result
+   * @param event event emitted upon clicking MapView
+   * @returns undefined
+   */
   private handleMapClick = async (event: any) => {
     const hitTest = await this.mapView?.hitTest(event);
 
@@ -86,17 +98,25 @@ export class ArcgisMapView extends LitElement {
     this.emitFeatureSelection(graphicHit);
   };
 
+  /**
+   * Create and emit a custom 'feature-selected' event based on a graphic hit result.
+   * Shapes attributes according to WebMap popup configuration.
+   * @param graphicHit
+   * @returns
+   */
   private emitFeatureSelection = (graphicHit: GraphicHit) => {
+    // Perform necessary type checking and narrowing
     const layer = graphicHit.graphic.layer;
 
     if (!(layer instanceof FeatureLayer)) {
       return;
     }
 
-    const featureLayer = graphicHit.graphic.layer as FeatureLayer;
-    const fieldInfos = featureLayer.popupTemplate?.fieldInfos ?? [];
+    const fieldInfos = layer.popupTemplate?.fieldInfos ?? [];
     const rawAttributes = graphicHit.graphic.attributes;
     const allAttributes = rawAttributes as Record<string, unknown>;
+
+    // Create object consisting solely of attributes configured in WebMap to be visible
     const visibleAttributes = fieldInfos
       ?.filter(info => info.visible)
       .reduce<Record<string, unknown>>((acc, info) => {
@@ -122,8 +142,8 @@ export class ArcgisMapView extends LitElement {
             attributes: visibleAttributes,
             geometry: graphicHit.graphic.geometry,
             layer: {
-              id: featureLayer?.id,
-              title: featureLayer?.title,
+              id: layer?.id,
+              title: layer?.title,
             },
           },
         },

@@ -17,20 +17,6 @@ export class ArcgisPopupPanel extends LitElement {
   @property({ attribute: false })
   selection?: PopupSelection | null = null;
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.addEventListener('wheel', this.handleWheel, { passive: false });
-  }
-
-  disconnectedCallback() {
-    this.removeEventListener('wheel', this.handleWheel);
-    super.disconnectedCallback();
-  }
-
-  private handleWheel = (e: WheelEvent) => {
-    e.stopPropagation();
-  };
-
   render() {
     if (!this.selection) {
       return null;
@@ -52,7 +38,12 @@ export class ArcgisPopupPanel extends LitElement {
     </calcite-panel>`;
   }
 
+  /**
+   * Render a read-only list of feature attributes for display in popup panel.
+   * Attributes are provided by parent app and already shaped according to Web Map configuration.
+   */
   private renderAttributes = () => {
+    // selection is guaranteed here due to early return in render()
     const attributes = Object.entries(this.selection!.attributes).filter(
       ([_, value]) => value != null && value !== '',
     );
@@ -71,10 +62,17 @@ export class ArcgisPopupPanel extends LitElement {
     `;
   };
 
+  /**
+   * Formats popup attribute keys into human-readable labels for display.
+   * Presentation-only transformation; does not affect underlying data.
+   */
   private formatLabel = (key: string) => {
     return key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
   };
 
+  /**
+   * Create and emit custom 'selection-cleared' event
+   */
   private handleSelectionCleared = () => {
     this.dispatchEvent(
       new CustomEvent('selection-cleared', {
