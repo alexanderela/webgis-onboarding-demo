@@ -116,22 +116,10 @@ export class ArcgisMapView extends LitElement {
     const rawAttributes = graphicHit.graphic.attributes;
     const allAttributes = rawAttributes as Record<string, unknown>;
 
-    // Create object consisting solely of attributes configured in WebMap to be visible
-    const visibleAttributes = fieldInfos
-      ?.filter(info => info.visible)
-      .reduce<Record<string, unknown>>((acc, info) => {
-        if (typeof info.fieldName !== 'string') {
-          return acc;
-        }
-        const fieldName = info.fieldName;
-        const label =
-          typeof info.label === 'string' && info.label.length > 0
-            ? info.label
-            : fieldName;
-
-        acc[label] = allAttributes[fieldName];
-        return acc;
-      }, {});
+    const visibleAttributes = this.buildVisibleAttributes(
+      fieldInfos,
+      allAttributes,
+    );
 
     this.dispatchEvent(
       new CustomEvent('feature-selected', {
@@ -151,6 +139,32 @@ export class ArcgisMapView extends LitElement {
         composed: true,
       }),
     );
+  };
+
+  /**
+   * Create and return object consisting solely of attributes configured in WebMap to be visible
+   */
+  private buildVisibleAttributes = (
+    fieldInfos: Array<{
+      fieldName?: unknown;
+      label?: unknown;
+      visible?: boolean;
+    }>,
+    attributes: Record<string, unknown>,
+  ) => {
+    return fieldInfos
+      ?.filter(info => info.visible)
+      .reduce<Record<string, unknown>>((acc, info) => {
+        if (typeof info.fieldName !== 'string') return acc;
+
+        const label =
+          typeof info.label === 'string' && info.label.length > 0
+            ? info.label
+            : info.fieldName;
+
+        acc[label] = attributes[info.fieldName];
+        return acc;
+      }, {});
   };
 
   static styles = css`
