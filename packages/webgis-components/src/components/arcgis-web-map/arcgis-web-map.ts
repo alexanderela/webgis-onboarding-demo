@@ -24,7 +24,7 @@ export class ArcgisMapView extends LitElement {
     this.initializeMapView();
   }
 
-  initializeMapView() {
+  private initializeMapView = () => {
     if (this.itemId) {
       const webMap = createWebMapFromItem(this.itemId);
 
@@ -32,58 +32,92 @@ export class ArcgisMapView extends LitElement {
 
       this.mapView.when(
         () => {
-          const layers = this.mapView?.map?.layers;
-          layers?.forEach(layer => {
-            if (layer.type === 'feature') {
-              const featureLayer = layer as FeatureLayer;
-              featureLayer.outFields = ['*'];
-            }
+          this.mapView?.map?.layers.forEach(layer => {
+            if (layer.type !== 'feature') return;
+            const featureLayer = layer as FeatureLayer;
+            const fieldInfos = featureLayer.popupTemplate?.fieldInfos;
+
+            if (!fieldInfos) return;
+
+            featureLayer.outFields = fieldInfos
+              .map(info => info.fieldName)
+              .filter(
+                (name): name is string =>
+                  typeof name === 'string' && !name.startsWith('expression/'),
+              );
           });
 
-          this.mapView?.on('click', async (event: any) => {
-            const hitTest = await this.mapView?.hitTest(event);
-            console.log('hitTest: ', hitTest);
-
-            const graphicHit = hitTest?.results?.find(
-              result => result.type === 'graphic',
-            );
-
-            if (graphicHit) {
-              const { attributes, geometry, layer } = graphicHit.graphic;
-              this.dispatchEvent(
-                new CustomEvent('feature-selected', {
-                  detail: {
-                    selection: {
-                      id: attributes.FID ?? attributes.OBJECTID,
-                      title: attributes.Volcano_Name ?? 'Selected volcano',
-                      attributes,
-                      geometry,
-                      layer: {
-                        id: layer?.id,
-                        title: layer?.title,
-                      },
-                    },
-                  },
-                  bubbles: true,
-                  composed: true,
-                }),
-              );
-            } else {
-              this.dispatchEvent(
-                new CustomEvent('selection-cleared', {
-                  bubbles: true,
-                  composed: true,
-                }),
-              );
-            }
-          });
+          this.mapView?.on('click', async (event: any) =>
+            this.handleMapClick(event),
+          );
         },
         error => {
-          console.log('error: ', error);
+          console.error('error: ', error);
         },
       );
     }
-  }
+  };
+
+  private handleMapClick = async (event: any) => {
+    const hitTest = await this.mapView?.hitTest(event);
+
+    const graphicHit = hitTest?.results?.find(
+      result => result.type === 'graphic',
+    );
+
+    if (!graphicHit) {
+      this.dispatchEvent(
+        new CustomEvent('selection-cleared', {
+          bubbles: true,
+          composed: true,
+        }),
+      );
+      return;
+    }
+
+    this.emitFeatureSelection(graphicHit);
+  };
+
+  private emitFeatureSelection = (graphicHit: any) => {
+    const featureLayer = graphicHit.graphic.layer as FeatureLayer;
+    const fieldInfos = featureLayer.popupTemplate?.fieldInfos ?? [];
+    const rawAttributes = graphicHit.graphic.attributes;
+    const allAttributes = rawAttributes as Record<string, unknown>;
+    const visibleAttributes = fieldInfos
+      ?.filter(info => info.visible)
+      .reduce<Record<string, unknown>>((acc, info) => {
+        if (typeof info.fieldName !== 'string') {
+          return acc;
+        }
+        const fieldName = info.fieldName;
+        const label =
+          typeof info.label === 'string' && info.label.length > 0
+            ? info.label
+            : fieldName;
+
+        acc[label] = allAttributes[fieldName];
+        return acc;
+      }, {});
+
+    this.dispatchEvent(
+      new CustomEvent('feature-selected', {
+        detail: {
+          selection: {
+            id: allAttributes.FID ?? allAttributes.OBJECTID,
+            title: allAttributes.Volcano_Name ?? 'Selected volcano',
+            attributes: visibleAttributes,
+            geometry: graphicHit.graphic.geometry,
+            layer: {
+              id: featureLayer?.id,
+              title: featureLayer?.title,
+            },
+          },
+        },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  };
 
   static styles = css`
     :host {

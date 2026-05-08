@@ -17,30 +17,63 @@ export class ArcgisPopupPanel extends LitElement {
   @property({ attribute: false })
   selection?: PopupSelection | null = null;
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('wheel', this.handleWheel, { passive: false });
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('wheel', this.handleWheel);
+    super.disconnectedCallback();
+  }
+
+  private handleWheel = (e: WheelEvent) => {
+    e.stopPropagation();
+  };
+
   render() {
-    console.log('this.selection: ', this.selection);
     if (!this.selection) {
       return null;
     }
 
-    return html`<div class="popup-container">
-      <header>
-        <h3>${this.selection.title}</h3>
-        <button @click=${this.handleSelectionCleared}>X</button>
-      </header>
-      <section>
-        <dl>
-          ${Object.entries(this.selection.attributes)
-            .filter(([_, value]) => value != null && value !== '')
-            .map(
-              ([key, val]) =>
-                html`<dt>${key}</dt>
-                  <dd>${String(val)}</dd>`,
-            )}
-        </dl>
-      </section>
-    </div>`;
+    return html` <calcite-panel
+      heading=${this.selection.title}
+      scale="m"
+      overlay-positioning="off"
+    >
+      <calcite-action
+        slot="header-actions-end"
+        icon="x"
+        text="Close"
+        appearance="transparent"
+        @click=${this.handleSelectionCleared}
+      ></calcite-action>
+      ${this.renderAttributes()}
+    </calcite-panel>`;
   }
+
+  private renderAttributes = () => {
+    const attributes = Object.entries(this.selection!.attributes).filter(
+      ([_, value]) => value != null && value !== '',
+    );
+
+    return html`
+      <calcite-list divider interaction-mode="none">
+        ${attributes.map(
+          ([key, val]) => html`
+            <calcite-list-item
+              label=${this.formatLabel(key)}
+              description=${String(val)}
+            ></calcite-list-item>
+          `,
+        )}
+      </calcite-list>
+    `;
+  };
+
+  private formatLabel = (key: string) => {
+    return key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+  };
 
   private handleSelectionCleared = () => {
     this.dispatchEvent(
@@ -56,15 +89,19 @@ export class ArcgisPopupPanel extends LitElement {
       position: absolute;
       bottom: 16px;
       left: 16px;
-      max-width: 320px;
+      max-width: 340px;
+      max-height: 60vh;
       z-index: 10;
+      pointer-events: auto;
     }
 
-    .popup-container {
-      background: #fff;
-      border-radius: 4px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
-      padding: 12px;
+    calcite-panel {
+      height: 100%;
+    }
+
+    calcite-panel::part(panel-content) {
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
   `;
 }

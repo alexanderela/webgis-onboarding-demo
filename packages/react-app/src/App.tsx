@@ -28,9 +28,7 @@ function App() {
   return (
     <div className="app-root">
       <header className="app-header">
-        <p className="header-text">
-          Different Types of Volcanoes Around the World
-        </p>
+        <p className="header-text">Volcanoes Around the World</p>
       </header>
       <div className="map-container">
         <arcgis-web-map item-id={itemId} />
