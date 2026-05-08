@@ -6,6 +6,14 @@ import MapView from '@arcgis/core/views/MapView';
 import { createMapView, createWebMapFromItem } from '../../arcgis';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
+type GraphicHit = {
+  graphic: {
+    attributes: Record<string, unknown>;
+    geometry: unknown;
+    layer?: unknown | null | undefined;
+  };
+};
+
 @customElement('arcgis-web-map')
 export class ArcgisMapView extends LitElement {
   @property({ attribute: 'item-id' })
@@ -78,7 +86,13 @@ export class ArcgisMapView extends LitElement {
     this.emitFeatureSelection(graphicHit);
   };
 
-  private emitFeatureSelection = (graphicHit: any) => {
+  private emitFeatureSelection = (graphicHit: GraphicHit) => {
+    const layer = graphicHit.graphic.layer;
+
+    if (!(layer instanceof FeatureLayer)) {
+      return;
+    }
+
     const featureLayer = graphicHit.graphic.layer as FeatureLayer;
     const fieldInfos = featureLayer.popupTemplate?.fieldInfos ?? [];
     const rawAttributes = graphicHit.graphic.attributes;
