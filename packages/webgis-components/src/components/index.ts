@@ -1,2 +1,3 @@
 export * from './button/index.js';
-export * from './arcgis-map-viewer/arcgis-map-view.js';
+export * from './arcgis-web-map/arcgis-web-map.js';
+export * from './arcgis-popup-panel/arcgis-popup-panel.js';

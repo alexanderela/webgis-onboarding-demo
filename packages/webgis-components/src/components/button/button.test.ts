@@ -1,6 +1,7 @@
 import './index.js';
 import { expect, fixture, html } from '@open-wc/testing';
 import { MyButton } from './index.js';
+import { describe, it } from 'vitest';
 
 describe('MyButton', () => {
   describe('accessibility', () => {
