@@ -1,4 +1,0 @@
-
-[build]
-  command = "pnpm --filter react-app build"
-  publish = "packages/react-app/dist"

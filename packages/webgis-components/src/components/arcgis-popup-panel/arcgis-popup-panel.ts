@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 
 type PopupSelection = {
   id: string;
@@ -12,8 +12,7 @@ type PopupSelection = {
   };
 };
 
-@customElement('arcgis-popup-panel')
-export class ArcgisPopupPanel extends LitElement {
+export default class ArcgisPopupPanel extends LitElement {
   @property({ attribute: false })
   selection?: PopupSelection | null = null;
 
@@ -104,8 +103,4 @@ export class ArcgisPopupPanel extends LitElement {
   `;
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'arcgis-popup-panel': ArcgisPopupPanel;
-  }
-}
+export { ArcgisPopupPanel };

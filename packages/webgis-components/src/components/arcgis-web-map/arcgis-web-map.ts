@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { property, query } from 'lit/decorators.js';
 
 import MapView from '@arcgis/core/views/MapView';
 
@@ -14,8 +14,7 @@ type GraphicHit = {
   };
 };
 
-@customElement('arcgis-web-map')
-export class ArcgisMapView extends LitElement {
+export default class ArcgisMapView extends LitElement {
   @property({ attribute: 'item-id' })
   itemId: string = '';
 
@@ -182,8 +181,4 @@ export class ArcgisMapView extends LitElement {
   `;
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'arcgis-web-map': ArcgisMapView;
-  }
-}
+export { ArcgisMapView };
