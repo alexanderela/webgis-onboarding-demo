@@ -40,7 +40,10 @@ export default [
     files: ['**/*.{js,mjs,cjs,ts}'],
     ...lit['flat/recommended'],
     ...js.configs.recommended,
-    rules: {},
+    rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
   },
 
   {

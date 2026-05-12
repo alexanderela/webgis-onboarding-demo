@@ -60,7 +60,7 @@ export default class ArcgisMapView extends LitElement {
               );
           });
 
-          this.mapView?.on('click', async (event: any) =>
+          this.mapView?.on('click', async (event: MouseEvent) =>
             this.handleMapClick(event),
           );
         },
@@ -77,7 +77,7 @@ export default class ArcgisMapView extends LitElement {
    * @param event event emitted upon clicking MapView
    * @returns undefined
    */
-  private handleMapClick = async (event: any) => {
+  private handleMapClick = async (event: MouseEvent) => {
     const hitTest = await this.mapView?.hitTest(event);
 
     const graphicHit = hitTest?.results?.find(
