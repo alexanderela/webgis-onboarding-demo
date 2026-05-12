@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { html, render } from 'lit';
 import ArcgisPopupPanel from './arcgis-popup-panel';
-import './arcgis-popup-panel';
+import './index';
 import { Panel } from '@esri/calcite-components/components/calcite-panel';
 
-describe('<arcgis-popup-panel>', () => {
+describe('<index>', () => {
   const selection = {
     id: '1',
     title: 'Test Feature',
@@ -25,7 +25,7 @@ describe('<arcgis-popup-panel>', () => {
 
     el!.selection = selection;
     await el?.updateComplete;
-
+    console.log('el: ', el?.shadowRoot);
     const panel = el?.shadowRoot!.querySelector('calcite-panel') as Panel;
     expect(panel).not.toBeNull();
     expect(panel?.getAttribute('heading')).toBe('Test Feature');
