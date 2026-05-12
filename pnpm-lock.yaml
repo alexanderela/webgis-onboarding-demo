@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@arcgis/core':
+        specifier: ^5.0.19
+        version: 5.0.19
       '@esri/calcite-components':
         specifier: ^5.0.2
         version: 5.0.2
@@ -18,9 +21,6 @@ importers:
 
   packages/react-app:
     dependencies:
-      '@onboarding/webgis-components':
-        specifier: workspace:*
-        version: link:../webgis-components
       react:
         specifier: ^19.2.5
         version: 19.2.6
@@ -70,9 +70,6 @@ importers:
 
   packages/webgis-components:
     dependencies:
-      '@arcgis/core':
-        specifier: ^5.0.19
-        version: 5.0.19
       code-bubble:
         specifier: ^1.3.3
         version: 1.3.3

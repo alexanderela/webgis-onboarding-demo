@@ -2,6 +2,11 @@ import { useEffect, useState, useCallback } from "react";
 import "./App.css";
 import type { FeatureSelection } from "./domain/FeatureSelection";
 
+const customAttributes = {
+  id: "FID",
+  title: "Volcano_Name",
+};
+
 function App() {
   const [selectedFeature, setSelectedFeature] =
     useState<FeatureSelection | null>(null);
@@ -37,8 +42,11 @@ function App() {
         <p className="header-text">Volcanoes Around the World</p>
       </header>
       <div className="map-container">
-        <arcgis-web-map item-id={itemId} />
-        <arcgis-popup-panel selection={selectedFeature} />
+        <arcgis-web-map
+          item-id={itemId}
+          custom-attributes={customAttributes}
+        ></arcgis-web-map>
+        <arcgis-popup-panel selection={selectedFeature}></arcgis-popup-panel>
       </div>
     </div>
   );

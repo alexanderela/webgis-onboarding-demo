@@ -18,6 +18,7 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
+    "@arcgis/core": "^5.0.19",
     "@esri/calcite-components": "^5.0.2"
   }
 }

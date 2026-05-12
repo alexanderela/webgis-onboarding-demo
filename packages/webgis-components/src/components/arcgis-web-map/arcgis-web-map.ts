@@ -14,9 +14,17 @@ type GraphicHit = {
   };
 };
 
+type CustomAttributes = {
+  id?: string;
+  title?: string;
+};
+
 export default class ArcgisMapView extends LitElement {
   @property({ attribute: 'item-id' })
   itemId: string = '';
+
+  @property({ attribute: 'custom-attributes' })
+  customAttributes?: CustomAttributes = {};
 
   render() {
     return html` <div id="viewDiv" />`;
@@ -120,12 +128,20 @@ export default class ArcgisMapView extends LitElement {
       allAttributes,
     );
 
+    const id = this.customAttributes?.id
+      ? allAttributes[this.customAttributes.id]
+      : allAttributes.OBJECTID;
+
+    const title = this.customAttributes?.title
+      ? allAttributes[this.customAttributes.title]
+      : 'Selected';
+
     this.dispatchEvent(
       new CustomEvent('feature-selected', {
         detail: {
           selection: {
-            id: allAttributes.FID ?? allAttributes.OBJECTID,
-            title: allAttributes.Volcano_Name ?? 'Selected volcano',
+            id,
+            title,
             attributes: visibleAttributes,
             geometry: graphicHit.graphic.geometry,
             layer: {
