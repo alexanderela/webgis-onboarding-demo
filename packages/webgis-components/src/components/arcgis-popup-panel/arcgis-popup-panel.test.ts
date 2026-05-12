@@ -25,7 +25,7 @@ describe('<index>', () => {
 
     el!.selection = selection;
     await el?.updateComplete;
-    console.log('el: ', el?.shadowRoot);
+
     const panel = el?.shadowRoot!.querySelector('calcite-panel') as Panel;
     expect(panel).not.toBeNull();
     expect(panel?.getAttribute('heading')).toBe('Test Feature');
