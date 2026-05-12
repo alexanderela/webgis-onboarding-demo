@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { html, render } from 'lit';
-import './arcgis-popup-panel';
+import ArcgisPopupPanel from './arcgis-popup-panel';
+import './index';
+import { Panel } from '@esri/calcite-components/components/calcite-panel';
 
-describe('<arcgis-popup-panel>', () => {
+describe('<index>', () => {
   const selection = {
     id: '1',
     title: 'Test Feature',
@@ -17,12 +19,14 @@ describe('<arcgis-popup-panel>', () => {
     document.body.appendChild(container);
     render(html`<arcgis-popup-panel></arcgis-popup-panel>`, container);
 
-    const el = container.querySelector('arcgis-popup-panel');
+    const el = container.querySelector(
+      'arcgis-popup-panel',
+    ) as ArcgisPopupPanel;
 
     el!.selection = selection;
     await el?.updateComplete;
 
-    const panel = el?.shadowRoot!.querySelector('calcite-panel');
+    const panel = el?.shadowRoot!.querySelector('calcite-panel') as Panel;
     expect(panel).not.toBeNull();
     expect(panel?.getAttribute('heading')).toBe('Test Feature');
   });
@@ -32,7 +36,9 @@ describe('<arcgis-popup-panel>', () => {
     document.body.appendChild(container);
     render(html`<arcgis-popup-panel></arcgis-popup-panel>`, container);
 
-    const el = container.querySelector('arcgis-popup-panel');
+    const el = container.querySelector(
+      'arcgis-popup-panel',
+    ) as ArcgisPopupPanel;
     await el!.updateComplete;
 
     const panel = el?.shadowRoot!.querySelector('calcit-panel');
@@ -44,7 +50,9 @@ describe('<arcgis-popup-panel>', () => {
     document.body.appendChild(container);
     render(html`<arcgis-popup-panel></arcgis-popup-panel>`, container);
 
-    const el = container.querySelector('arcgis-popup-panel');
+    const el = container.querySelector(
+      'arcgis-popup-panel',
+    ) as ArcgisPopupPanel;
     el!.selection = selection;
     await el!.updateComplete;
 

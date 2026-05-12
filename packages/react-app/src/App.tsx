@@ -7,7 +7,7 @@ function App() {
     useState<FeatureSelection | null>(null);
   const itemId = "73f23d530b494f99a46c750bce66e01e";
 
-  const handleFeatureSelected = useCallback((e: any) => {
+  const handleFeatureSelected = useCallback((e: CustomEvent) => {
     setSelectedFeature(e.detail.selection);
   }, []);
 
@@ -16,11 +16,17 @@ function App() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("feature-selected", handleFeatureSelected);
+    window.addEventListener(
+      "feature-selected",
+      handleFeatureSelected as EventListener,
+    );
     window.addEventListener("selection-cleared", handleSelectionCleared);
 
     return () => {
-      window.removeEventListener("feature-selected", handleFeatureSelected);
+      window.removeEventListener(
+        "feature-selected",
+        handleFeatureSelected as EventListener,
+      );
       window.removeEventListener("selection-cleared", handleSelectionCleared);
     };
   }, [handleFeatureSelected, handleSelectionCleared]);
