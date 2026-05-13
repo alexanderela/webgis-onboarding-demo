@@ -1,3 +1,5 @@
+import '../src/global.d.ts';
+
 import { setCustomElementsManifest } from '@storybook/web-components-vite';
 import customElements from '../custom-elements.json';
 import packageJson from '../package.json';
@@ -7,6 +9,12 @@ import { setWcDoxConfig } from 'wc-dox';
 import './code-bubble-setup.js';
 import './styles.css';
 import '../public/html/index.js';
+
+import { defineCustomElements } from '@esri/calcite-components/loader';
+import { setAssetPath } from '@esri/calcite-components';
+
+setAssetPath('/assets');
+defineCustomElements(window);
 
 import type { Preview } from '@storybook/web-components-vite';
 

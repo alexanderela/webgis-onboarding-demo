@@ -11,6 +11,12 @@ const config: StorybookConfig = {
     name: '@storybook/web-components-vite',
     options: {},
   },
-  staticDirs: ['../public'],
+  staticDirs: [
+    '../public',
+    {
+      from: '../../../node_modules/@esri/calcite-components/dist/cdn/assets',
+      to: '/assets',
+    },
+  ],
 };
 export default config;
