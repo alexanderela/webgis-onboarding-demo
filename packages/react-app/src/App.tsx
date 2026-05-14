@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import "./App.css";
 import type { FeatureSelection } from "./domain/FeatureSelection";
 
@@ -8,6 +8,7 @@ const customAttributes = {
 };
 
 function App() {
+  const mapRef = useRef<any>(null);
   const [selectedFeature, setSelectedFeature] =
     useState<FeatureSelection | null>(null);
   const itemId = "73f23d530b494f99a46c750bce66e01e";
@@ -18,6 +19,15 @@ function App() {
 
   const handleSelectionCleared = useCallback(() => {
     setSelectedFeature(null);
+  }, []);
+
+  useEffect(() => {
+    const el = mapRef.current;
+    if (!el) return;
+
+    setTimeout(() => {
+      el.customAttributes = customAttributes;
+    });
   }, []);
 
   useEffect(() => {
@@ -42,10 +52,7 @@ function App() {
         <p className="header-text">Volcanoes Around the World</p>
       </header>
       <div className="map-container">
-        <arcgis-web-map
-          item-id={itemId}
-          custom-attributes={customAttributes}
-        ></arcgis-web-map>
+        <arcgis-web-map item-id={itemId} ref={mapRef}></arcgis-web-map>
         <arcgis-popup-panel selection={selectedFeature}></arcgis-popup-panel>
       </div>
     </div>

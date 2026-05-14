@@ -104,6 +104,6 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["src", "./types/custom-element-jsx"],
+  "include": ["src", "./types/custom-element-jsx", ".storybook"],
   "exclude": ["**/*.stories.ts", "**/*.test.ts"]
 }

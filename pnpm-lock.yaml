@@ -21,6 +21,9 @@ importers:
 
   packages/react-app:
     dependencies:
+      '@onboarding/webgis-components':
+        specifier: workspace:*
+        version: link:../webgis-components
       react:
         specifier: ^19.2.5
         version: 19.2.6
