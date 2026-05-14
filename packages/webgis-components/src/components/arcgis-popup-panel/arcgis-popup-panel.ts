@@ -13,6 +13,7 @@ type PopupSelection = {
 };
 
 export default class ArcgisPopupPanel extends LitElement {
+  /** Provides necessary title of selected feature and desired attributes to be displayed as list items. The presence of a selection determines whether or not this component will render. */
   @property({ attribute: false })
   selection?: PopupSelection | null = null;
 

@@ -51,6 +51,7 @@ setWcDoxConfig(customElements, {
 });
 
 const preview: Preview = {
+  tags: ['autodocs'],
   parameters: {
     controls: {
       expanded: true, // provides descriptions and additional info for controls
