@@ -36,7 +36,7 @@ jobs:
         run: pnpm install
 
       - name: Build web component library
-        run: pnpm --filter webgis-components build
+        run: pnpm --filter @onboarding/webgis-components build
 
       - name: Build React App
         run: pnpm --filter react-app build
