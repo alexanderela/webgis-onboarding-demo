@@ -1,0 +1,31 @@
+on:
+  push:
+    branches: ["main"] # Trigger on push to main branch
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  contents: read # To checkout code
+  pages: write # To deploy to Pages
+  id-token: write # To verify deployment source
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./dist" # Path to your static files (e.g., './dist' for frameworks)
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
