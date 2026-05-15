@@ -23,7 +23,7 @@ export default class ArcgisMapView extends LitElement {
   @property({ attribute: 'item-id' })
   itemId: string = '';
 
-  @property({ attribute: 'custom-attributes' })
+  @property({ attribute: false })
   customAttributes?: CustomAttributes = {};
 
   render() {
