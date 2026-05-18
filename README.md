@@ -6,6 +6,8 @@ The primary idea here is that a single Web Map configured in ArcGIS Online can p
 
 [Deployed app](https://alexanderela.github.io/webgis-onboarding-demo/)
 
+<img width="983" height="930" alt="Screenshot 2026-05-18 at 3 59 51 PM" src="https://github.com/user-attachments/assets/959c6565-a931-43e5-841f-52aa46a7e39f" />
+
 ## What this demonstrates
 
 - A single Web Map as the main source of truth for data and configuration
