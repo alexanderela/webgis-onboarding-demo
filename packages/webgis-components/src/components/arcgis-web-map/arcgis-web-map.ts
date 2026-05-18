@@ -36,7 +36,9 @@ export default class ArcgisMapView extends LitElement {
   private mapView: MapView | null = null;
 
   firstUpdated() {
-    this.initializeMapView();
+    requestAnimationFrame(() => {
+      this.initializeMapView();
+    });
   }
 
   /**
