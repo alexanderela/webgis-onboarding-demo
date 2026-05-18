@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import "./index.css";
-import "./App.css";
 import type { FeatureSelection } from "./domain/FeatureSelection";
 
 const customAttributes = {

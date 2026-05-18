@@ -4,6 +4,30 @@ html, body, #root {
   padding: 0;
 }
 
+.app-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.app-header {
+  flex: 0 0 auto;
+}
+
+.header-text {
+  margin-left: 16px;
+  text-align: left;
+}
+
+.map-container {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
