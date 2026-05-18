@@ -4,6 +4,8 @@ This project demonstrates the WebGIS narrative using a small, reusable web compo
 
 The primary idea here is that a single Web Map configured in ArcGIS Online can power multiple applications, from no-code apps to highly customized ones.
 
+[Deployed app](https://alexanderela.github.io/webgis-onboarding-demo/)
+
 ## What this demonstrates
 
 - A single Web Map as the main source of truth for data and configuration
